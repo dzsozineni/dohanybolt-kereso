@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="hu">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Dohánybolt Kereső</title>
+<meta name="description" content="Dohányboltok keresése nyitvatartással, térképpel és útvonaltervezéssel.">
+<meta name="theme-color" content="#0E2350">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Dohánybolt">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="stylesheet" href="vendor/leaflet/leaflet.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="brand-mark" aria-hidden="true">
+      <svg viewBox="0 0 24 24"><path d="M4 9.5 5.3 5h13.4L20 9.5a2.6 2.6 0 0 1-5 0 2.6 2.6 0 0 1-5 0 2.6 2.6 0 0 1-5 0Z M5.5 12v7h13v-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M10 19v-4h4v4" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+    </span>
+    <span class="brand-name">Dohánybolt Kereső</span>
+  </div>
+  <button class="icon-btn" id="btnAbout" aria-label="Névjegy és adatbázis">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 11v6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="7.6" r="1.25" fill="currentColor"/></svg>
+  </button>
+</header>
+
+<main>
+  <!-- LISTA -->
+  <section id="viewList" class="view view-list" aria-label="Dohányboltok listája">
+    <div class="list-head">
+      <h1>Dohányboltok</h1>
+      <div class="search-row" data-search></div>
+      <div class="chips" data-chips data-with-map></div>
+      <p class="count" id="count" aria-live="polite"></p>
+    </div>
+    <ol class="cards" id="cards"></ol>
+    <div id="sentinel" class="sentinel"></div>
+    <div id="empty" class="empty" hidden>
+      <svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="m15.5 15.5 5 5M8 8l5 5M13 8l-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      <strong>Nincs találat</strong>
+      <span>Próbálj más keresést, vagy kapcsold ki a szűrőket.</span>
+    </div>
+  </section>
+
+  <!-- TÉRKÉP -->
+  <section id="viewMap" class="view view-map" aria-label="Térkép" hidden>
+    <div id="map"></div>
+    <div class="map-overlay">
+      <div class="search-row floating" data-search></div>
+      <div class="chips floating" data-chips></div>
+    </div>
+    <div class="map-buttons" id="mapButtons">
+      <button class="round-btn" id="zoomIn" aria-label="Nagyítás"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></button>
+      <button class="round-btn" id="zoomOut" aria-label="Kicsinyítés"><svg viewBox="0 0 24 24"><path d="M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></button>
+      <button class="round-btn" id="locate" aria-label="Saját hely és a legközelebbi boltok"><svg viewBox="0 0 24 24"><path d="M20.5 3.5 3.8 10.6l7 2.6 2.6 7Z" fill="currentColor"/></svg></button>
+    </div>
+    <div class="selected" id="selected" hidden></div>
+  </section>
+</main>
+
+<nav class="tabbar" aria-label="Nézetek">
+  <button class="tab is-active" data-tab="list">
+    <svg viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="4.5" cy="6" r="1.4" fill="currentColor"/><circle cx="4.5" cy="12" r="1.4" fill="currentColor"/><circle cx="4.5" cy="18" r="1.4" fill="currentColor"/></svg>
+    <span>Dohányboltok</span>
+  </button>
+  <button class="tab" data-tab="map">
+    <svg viewBox="0 0 24 24"><path d="M9 4 3.5 6v14L9 18l6 2 5.5-2V4L15 6 9 4Zm0 0v14m6-12v14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+    <span>Térkép</span>
+  </button>
+</nav>
+
+<!-- Alsó lapok -->
+<div class="backdrop" id="backdrop" hidden></div>
+<section class="sheet" id="sheetShop" role="dialog" aria-modal="true" aria-labelledby="shopTitle" hidden></section>
+<section class="sheet sheet-short" id="sheetFilters" role="dialog" aria-modal="true" aria-labelledby="filtersTitle" hidden></section>
+<section class="sheet" id="sheetAbout" role="dialog" aria-modal="true" aria-labelledby="aboutTitle" hidden></section>
+
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script src="vendor/leaflet/leaflet.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
