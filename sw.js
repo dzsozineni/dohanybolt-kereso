@@ -1,5 +1,5 @@
 // Offline gyorsítótár: az app magja cache-ből jön, az adatfájl hálózatról (ha van), különben cache-ből.
-const VERSION = 'v1';
+const VERSION = 'v6';
 const SHELL = [
   './', 'index.html', 'style.css', 'app.js', 'manifest.webmanifest',
   'vendor/leaflet/leaflet.js', 'vendor/leaflet/leaflet.css',

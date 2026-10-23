@@ -286,7 +286,7 @@ function openShop(id) {
   if (!s) return;
   const st = status(s), d = state.user ? haversine(state.user, s) : null;
   const today = dayIdx(new Date());
-  const sub = [s.zip, s.district].filter(Boolean).join(', ');
+  const sub = [s.zip, s.district].filter(Boolean).join(' · ');
   openSheet($('#sheetShop'), `
     <div class="shop-head">
       <div>

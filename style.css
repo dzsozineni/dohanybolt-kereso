@@ -215,19 +215,22 @@ h1 { margin: 0 0 16px; font-size: 32px; font-weight: 800; letter-spacing: -.4px;
 @keyframes slide { from { transform: translateY(100%); } }
 .sheet .handle { margin-bottom: 0; }
 .sheet-close {
-  display: block; margin-left: auto; border: 0; background: none;
-  color: var(--muted); padding: 8px; border-radius: 50%;
+  display: grid; place-items: center; margin: 4px 0 4px auto;
+  width: 36px; height: 36px; padding: 0; border-radius: 50%;
+  border: 0; background: rgba(14, 35, 80, .08); color: var(--navy-soft);
 }
-.sheet-close svg { width: 26px; height: 26px; }
-.shop-head { display: flex; gap: 12px; align-items: flex-start; }
+.sheet-close:active { background: rgba(14, 35, 80, .14); }
+.sheet-close svg { width: 18px; height: 18px; }
+.shop-head { display: flex; gap: 12px; align-items: flex-end; }
 .shop-head > div:first-child { flex: 1; min-width: 0; }
 .shop-head h2 { margin: 0; font-size: 32px; font-weight: 800; line-height: 1.1; letter-spacing: -.3px; }
 .shop-head .addr { margin: 6px 0 0; font-size: 20px; color: var(--navy-soft); }
 .shop-head .sub { margin: 2px 0 0; font-size: 15px; color: var(--muted); }
 .shop-status { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 14px; }
 .shop-status span.txt { color: var(--muted); font-size: 14px; }
-.route { display: flex; flex-direction: column; align-items: center; gap: 6px; text-decoration: none; color: var(--navy); font-weight: 600; }
-.route small { color: var(--muted); font-weight: 400; font-size: 13px; }
+.route { flex: none; display: flex; flex-direction: column; align-items: center; gap: 8px; text-decoration: none; color: var(--navy); font-weight: 700; font-size: 17px; margin-bottom: 8px; }
+.route { position: relative; }
+.route small { position: absolute; top: 100%; left: 50%; transform: translateX(-50%); margin-top: -4px; white-space: nowrap; color: var(--muted); font-weight: 500; font-size: 14px; }
 .rule { height: 1.5px; background: var(--gold); opacity: .7; margin: 22px 0 18px; border: 0; }
 .sheet h3 { margin: 0 0 10px; font-size: 22px; font-weight: 700; }
 .hours { margin: 0; padding: 0; list-style: none; }
