@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
   schedule:
-    - cron: "17 4 * * *"     # naponta 06:17 magyar idő szerint (nyáron)
+     - cron: "17 */4 * * *"   # 4 óránként
   workflow_dispatch:
 
 permissions:
