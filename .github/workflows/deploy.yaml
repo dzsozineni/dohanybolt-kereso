@@ -1,0 +1,70 @@
+name: Frissítés és közzététel
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: "17 */4 * * *"   # 4 óránként
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Adatbázis frissítése a szerverről
+        run: python3 tools/update_from_server.py || echo "::warning::A szerver nem elérhető, a meglévő adat marad."
+
+      - name: Új adat mentése a repóba
+        id: save
+        run: |
+          if git diff --quiet data/; then
+            echo "Nincs új adat."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            git config user.name "github-actions[bot]"
+            git config user.email "41898+github-actions[bot]@users.noreply.github.com"
+            git add data/
+            git commit -m "Adatbázis frissítve"
+            git push
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      # Időzített futásnál csak akkor teszi közzé az oldalt, ha jött új adat.
+      # Feltöltésnél (push) és kézi indításnál mindig közzétesz.
+      - name: Közzététel szükséges?
+        id: gate
+        run: |
+          if [ "${{ github.event_name }}" != "schedule" ] || [ "${{ steps.save.outputs.changed }}" = "true" ]; then
+            echo "deploy=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "Nincs változás, közzététel kihagyva."
+            echo "deploy=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - if: steps.gate.outputs.deploy == 'true'
+        uses: actions/configure-pages@v5
+      - if: steps.gate.outputs.deploy == 'true'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+      - if: steps.gate.outputs.deploy == 'true'
+        id: deployment
+        uses: actions/deploy-pages@v4
