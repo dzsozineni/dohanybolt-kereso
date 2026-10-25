@@ -59,11 +59,11 @@ function navUrl(s) {
     : `https://www.google.com/maps/dir/?api=1&destination=${s.lat},${s.lng}`;
 }
 let toastTimer;
-function toast(msg) {
+function toast(msg, ms = 3200) {
   const t = $('#toast');
   t.textContent = msg; t.hidden = false;
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => (t.hidden = true), 3200);
+  toastTimer = setTimeout(() => (t.hidden = true), ms);
 }
 
 /* ---------------- nyitvatartás (az eredeti app logikájának portja) ----------------
@@ -448,9 +448,17 @@ function askLocation() {
     if (first || moved > 150) renderList();
     if (map && !didFocusUser) { didFocusUser = true; focusUser(); }
   }, err => {
+    if (watchId != null) navigator.geolocation.clearWatch(watchId);
     watchId = null;
-    if (err.code === err.PERMISSION_DENIED) toast('Helyhozzáférés nélkül ábécérendben listázok.');
-  }, { enableHighAccuracy: true, maximumAge: 60000, timeout: 20000 });
+    if (state.user) return; // már van helyzet, egy átmeneti hiba nem számít
+    if (err.code === err.PERMISSION_DENIED) {
+      toast(IS_IOS
+        ? 'A helyhozzáférés le van tiltva. Safariban: címsor menü → Webhelybeállítások → Hely → Engedélyezés. A rendszerben: Beállítások → Adatvédelem → Helymeghatározás → Safari-webhelyek.'
+        : 'A helyhozzáférés le van tiltva. A böngésző címsoránál engedélyezd a helyet ennek az oldalnak.', 9000);
+    } else {
+      toast('A helyzeted most nem érhető el. Próbáld újra a ➤ gombbal.');
+    }
+  }, { enableHighAccuracy: false, maximumAge: 120000, timeout: 15000 });
 }
 
 /* ---------------- nézetváltás ---------------- */
@@ -477,6 +485,7 @@ async function main() {
   $$('.tab').forEach(b => b.addEventListener('click', () => showTab(b.dataset.tab)));
   $('#btnAbout').addEventListener('click', openAbout);
   $('#backdrop').addEventListener('click', () => closeSheet());
+  $('#toast').addEventListener('click', () => ($('#toast').hidden = true));
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSheet(); });
 
   $('#count').textContent = 'Betöltés…';
