@@ -5,8 +5,12 @@ Használat:
   python3 tools/build_data.py <sqlite> [--last-update "2026-10-22 14:30:00"]
 """
 import argparse, json, sqlite3, pathlib, datetime
+from zoneinfo import ZoneInfo
 
 DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+# A GitHub Actions gép UTC-ben jár; a szerver LastUpdate értéke magyar idő.
+# Hogy a kettő összevethető legyen, a builtAt is magyar idő szerint készül.
+BUDAPEST = ZoneInfo("Europe/Budapest")
 
 def build(db_path, last_update=None, out="data/shops.json"):
     c = sqlite3.connect(db_path)
@@ -31,7 +35,7 @@ def build(db_path, last_update=None, out="data/shops.json"):
         ])
     meta = {
         "lastUpdate": last_update,  # a szerver LastUpdate értéke (teljes időbélyeg), vagy null = beépített
-        "builtAt": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        "builtAt": datetime.datetime.now(BUDAPEST).strftime("%Y-%m-%d %H:%M:%S"),  # magyar idő
         "count": len(shops),
     }
     data = {"meta": meta, "schedules": schedules, "shops": shops}
